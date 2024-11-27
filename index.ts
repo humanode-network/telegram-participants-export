@@ -47,6 +47,7 @@ const exportMembers = async (chat_id: number) => {
       }
 
       console.log("User ID:", member.member_id.user_id);
+      console.log("Invited by:", member.inviter_user_id);
     }
   }
 };
