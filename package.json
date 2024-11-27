@@ -7,5 +7,9 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "prebuilt-tdlib": "^0.1008040.0",
+    "tdl": "^8.0.1"
   }
 }
