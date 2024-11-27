@@ -41,7 +41,7 @@ const exportMembers = async (chatId: number) => {
       _: "getSupergroupMembers",
       supergroup_id: chat.type.supergroup_id,
       filter: { _: "supergroupMembersFilterSearch", query: "" },
-      limit: 2,
+      limit: 200,
       offset,
     });
 
