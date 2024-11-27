@@ -26,6 +26,7 @@ Currently, only the supergroups are supported.
    export TG_API_HASH="00000000000000000000000000000000" # Telegram API Hash
    export TG_BOT_TOKEN="1234567890:Qwertyqwertyqwertyqwertyqwertyqwert" # The bot token from BotFather
    export TG_BOT_ADMIN_USER_ID="1234567890" # Your User ID
+   export EXPORTS_DIR="exports" # Where to place the export files
    ```
 
    Save the snippet above in a file called `.env` and load them into your shell:

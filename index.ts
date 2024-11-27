@@ -1,6 +1,8 @@
 import tdl from "tdl";
 import { getTdjson } from "prebuilt-tdlib";
 import type { Update } from "tdlib-types";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 tdl.configure({ tdjson: getTdjson() });
 
@@ -16,6 +18,7 @@ const TG_API_ID = env("TG_API_ID");
 const TG_API_HASH = env("TG_API_HASH");
 const TG_BOT_TOKEN = env("TG_BOT_TOKEN");
 const TG_BOT_ADMIN_USER_ID = env("TG_BOT_ADMIN_USER_ID");
+const EXPORTS_DIR = env("EXPORTS_DIR");
 
 const client = tdl.createClient({
   apiId: Number(TG_API_ID),
@@ -27,6 +30,29 @@ console.log("Admin ID:", botAdminUserId);
 
 client.on("error", console.error);
 
+type MemberInfo = {
+  userId: number;
+  invitedByUserId: number;
+};
+
+type WriteExportParams = {
+  id: string;
+  peerId: number;
+  members: MemberInfo[];
+};
+
+await fs.mkdir(EXPORTS_DIR, { recursive: true });
+
+const writeExport = async (params: WriteExportParams) => {
+  await fs.writeFile(
+    path.join(EXPORTS_DIR, `${params.id}.json`),
+    JSON.stringify(params),
+    {
+      flag: "wx",
+    }
+  );
+};
+
 const exportMembers = async (chatId: number) => {
   const chat = await client.invoke({ _: "getChat", chat_id: chatId });
 
@@ -35,6 +61,8 @@ const exportMembers = async (chatId: number) => {
   }
 
   let offset: undefined | number;
+
+  const membersList: MemberInfo[] = [];
 
   while (true) {
     const page = await client.invoke({
@@ -60,10 +88,18 @@ const exportMembers = async (chatId: number) => {
         continue;
       }
 
-      console.log("User ID:", member.member_id.user_id);
-      console.log("Invited by:", member.inviter_user_id);
+      membersList.push({
+        userId: member.member_id.user_id,
+        invitedByUserId: member.inviter_user_id,
+      });
     }
   }
+
+  await writeExport({
+    id: `${Date.now()}-${chatId}`,
+    peerId: chat.type.supergroup_id,
+    members: membersList,
+  });
 };
 
 const handleUpdate = async (update: Update) => {
