@@ -111,8 +111,8 @@ async function main() {
   for await (const update of client.iterUpdates()) {
     try {
       await handleUpdate(update);
-    } catch (e) {
-      console.log("Error", e);
+    } catch (error) {
+      console.error(error);
     }
   }
 }
