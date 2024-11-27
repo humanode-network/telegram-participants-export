@@ -23,6 +23,7 @@ const client = tdl.createClient({
 });
 
 const botAdminUserId = Number(TG_BOT_ADMIN_USER_ID);
+console.log("Admin ID:", botAdminUserId);
 
 client.on("error", console.error);
 
@@ -105,7 +106,7 @@ async function main() {
   await client.loginAsBot(TG_BOT_TOKEN);
 
   const me = await client.invoke({ _: "getMe" });
-  console.log("My user:", me.id);
+  console.log("Bot ID:", me.id);
 
   for await (const update of client.iterUpdates()) {
     try {
